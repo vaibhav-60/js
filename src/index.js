@@ -11,7 +11,15 @@ dotenv.config({
 const app = express();
 
 
-connectDB();
+connectDB()
+.then(() => {
+    app.listen(process.env.PORT || 9000, () => {
+        console.log(`app is running on port ${process.env.PORT}`)
+    })
+})
+.catch((err) => {
+    console.log(`error in the mongodb express connection`, err)
+})
 /*
 ;(async () => {
     try {
