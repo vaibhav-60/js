@@ -16,7 +16,8 @@ const uploadOnCloudinary = async (localFilePath) => {
             resource_type: "auto"
         })
         // file uploaded successfull
-        console.log("file is uploaded on cloudinary", response.url);
+        // console.log("file is uploaded on cloudinary", response.url);
+        fs.unlinkSync(localFilePath)
         return reponse
     } catch (error) {
         fs.unlinkSync(localFilePath) // remove krdega locally saved temporary file ko kyuki
