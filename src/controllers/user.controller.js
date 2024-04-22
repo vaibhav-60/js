@@ -13,7 +13,7 @@ const generateAccessAndRefreshToken = async(userId) => {
         const refreshToken = user.generateRefreshToken()
 
         user.refreshToken = refreshToken
-        user.save({validateBeforeSave: false})
+        await user.save({validateBeforeSave: false})
 
         return {accessToken, refreshToken}
 
@@ -87,7 +87,7 @@ const registerUser = asyncHandler( async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const {email, username, password} = req.body
 
-    if(!email || !username) {
+    if(!(email || username)) {
     throw new apiError(400, "username or email required")
     }
 
@@ -107,7 +107,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
 
-    const loggenUser = await User.findById(user._id).
+    const loggedInUser = await User.findById(user._id).
     select("-password -refreshToken")
 
     const options = {
@@ -123,10 +123,10 @@ const loginUser = asyncHandler(async (req, res) => {
         new apiResponse(
             200,
             {
-                user: loggedInUser, accessToken,
-                refreshToken
+                user: loggedInUser, accessToken, refreshToken
+                
             },
-            "user loggenin successfully"
+            "user loggedIn successfully"
         )
     )
 })
