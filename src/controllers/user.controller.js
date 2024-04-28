@@ -141,8 +141,8 @@ const logoutUser = asyncHandler( async (req,res) => {
     User.findByIdAndUpdate(
         req.user._id,
         {
-            $set: {
-                refreshToken: undefined
+            $unset: {
+                refreshToken: 1
             }
         },
         {
@@ -412,7 +412,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
             $lookup: {
                 from: "videos",
                 localField: "watchHistory",
-                foriegnField: "_id",
+                foreignField: "_id",
                 as: "watchHistory",
                 pipeline: [
                     {
@@ -451,7 +451,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     .json(
         new apiResponse(
             200,
-            watch[0].watchHistory,
+            user[0].watchHistory,
             "watched history fetched successffully"
             
         )
