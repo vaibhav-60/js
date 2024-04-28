@@ -420,8 +420,24 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                             from: "users",
                             localField: "owner",
                             foreignField: "_id",
-                            as: "owner"
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        fullName: 1,
+                                        userName: 1,
+                                        avatar: 1
+                                    }
+                                }
+                            ]
     
+                        }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
                         }
                     }
                     
@@ -429,6 +445,18 @@ const getWatchHistory = asyncHandler(async (req, res) => {
             }
         }
     ])
+
+    return res
+    .status(200)
+    .json(
+        new apiResponse(
+            200,
+            watch[0].watchHistory,
+            "watched history fetched successffully"
+            
+        )
+    )
+
 })
 
 export {
@@ -440,9 +468,7 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateUserCoverImage,
-    updateUserAvatar
-    
-    
-
-
+    updateUserAvatar,
+    getUserChannelProfile,
+    getWatchHistory
 }
